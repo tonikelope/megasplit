@@ -1,5 +1,5 @@
 # megasplit
-Just another split wrapper with some sugar
+Just another split command wrapper with some sugar
 
 1. Progressbar
 
