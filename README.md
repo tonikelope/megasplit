@@ -12,7 +12,7 @@ Just another split wrapper with some sugar
 4. Optionally, the original file can be deleted after splitting.
 
 
-tonikelope@cueva: ~ $ megasplit 
+<pre>tonikelope@cueva: ~ $ megasplit 
  __  __ _____ ____    _    ____  ____  _     ___ _____ 
 |  \/  | ____/ ___|  / \  / ___||  _ \| |   |_ _|_   _|
 | |\/| |  _|| |  _  / _ \ \___ \| |_) | |    | |  | |  
@@ -22,3 +22,4 @@ tonikelope Solutions S. L.
 
 Usage: megasplit.sh [-b BYTES] [-r] FILE
 -r Remove original file after split
+</pre>
