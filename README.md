@@ -20,6 +20,6 @@ Just another split command wrapper with some sugar
 |_|  |_|_____\____/_/   \_\____/|_|   |_____|___| |_|  
 tonikelope Solutions S. L.
 
-Usage: megasplit.sh [-b BYTES] [-r] FILE
+Usage: megasplit.sh <-b BYTES> [-r] FILE
 -r Remove original file after split
 </pre>
