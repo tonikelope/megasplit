@@ -45,7 +45,7 @@ while getopts b:r flag; do
   case "$flag" in
     b) BYTES=$OPTARG;;
 	r) REMOVE_ATER_SPLIT=true;;
-    \?) echo -e "Usage: $(basename $0) [-b BYTES] [-r] FILE\n-r Remove original file after split"
+    \?) echo -e "Usage: $(basename $0) -b BYTES [-r] FILE\n-r Remove original file after split"
 		exit 1
 	;;
   esac
@@ -54,14 +54,14 @@ done
 shift $((OPTIND - 1))
 
 if [ -z "$BYTES" ]; then
-	echo -e "Usage: $(basename $0) [-b BYTES] [-r] FILE\n-r Remove original file after split"
+	echo -e "Usage: $(basename $0) -b BYTES [-r] FILE\n-r Remove original file after split"
 	exit 1
 fi
 
 FILE=${1}
 
 if [ ! -f "$FILE" ]; then
-	echo -e "Usage: $(basename $0) [-b BYTES] [-r] FILE\n-r Remove original file after split"
+	echo -e "Usage: $(basename $0) -b BYTES [-r] FILE\n-r Remove original file after split"
     exit 1
 fi
 
@@ -100,7 +100,7 @@ do
 	sleep 1
 done
 
-SHA1_FILE_SIZE=$(stat -c "%s" "$FILE")
+SHA1_FILE_SIZE=$(stat -c "%s" "$FILE".sha1)
 
 while [ "$SHA1_FILE_SIZE" -eq "0" ]
 do
@@ -117,7 +117,7 @@ i=1
 for f in $(ls | grep -Eo 'x[0-9]+___')
 do
 	mv "$f" "${FILE}.part${i}-${TOTAL}"
-	let "i+=1" 
+	i=$((i+1)) 
 done
 
 echo -e "\tOK\n"
