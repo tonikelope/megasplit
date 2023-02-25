@@ -44,8 +44,8 @@ REMOVE_ATER_SPLIT=false
 while getopts b:r flag; do
   case "$flag" in
     b) BYTES=$OPTARG;;
-	r) REMOVE_ATER_SPLIT=true;;
-    \?) echo -e "Usage: $(basename $0) -b BYTES [-r] FILE\n-r Remove original file after split"
+    r) REMOVE_ATER_SPLIT=true;;
+    \?) echo -e "Usage: $(basename $0) -b BYTES [-r] FILE [OUTPUT_DIR]\n-r Remove original file after split"
 		exit 1
 	;;
   esac
@@ -54,15 +54,21 @@ done
 shift $((OPTIND - 1))
 
 if [ -z "$BYTES" ]; then
-	echo -e "Usage: $(basename $0) -b BYTES [-r] FILE\n-r Remove original file after split"
+	echo -e "Usage: $(basename $0) -b BYTES [-r] FILE [OUTPUT_DIR]n-r Remove original file after split"
 	exit 1
 fi
 
 FILE=${1}
 
 if [ ! -f "$FILE" ]; then
-	echo -e "Usage: $(basename $0) -b BYTES [-r] FILE\n-r Remove original file after split"
+    echo -e "Usage: $(basename $0) -b BYTES [-r] FILE [OUTPUT_DIR]\n-r Remove original file after split"
     exit 1
+fi
+
+if [ -d "$2" ]; then
+
+	OUTPUT_DIR="${2}/"
+
 fi
 
 if [ "$REMOVE_ATER_SPLIT" = true ]; then
@@ -75,13 +81,13 @@ date
 
 echo -e "\nGenerating (background) SHA1SUM..."
 
-(sha1sum "$FILE" | awk '{print $1}' > "$FILE".sha1) &
+(sha1sum "$FILE" | awk '{print $1}' > "${OUTPUT_DIR}${FILE}".sha1) &
 
 echo -e "\nSplitting file..."
 
 TOT_SIZE=$(stat -c "%s" "$FILE")
 
-(split --verbose -b "$BYTES" -d "$FILE" --additional-suffix=___ > /dev/null) &
+(split --verbose -b "$BYTES" -d --additional-suffix="___" "$FILE" "${OUTPUT_DIR}x" > /dev/null) &
 
 SIZE=0
 
@@ -89,9 +95,15 @@ while [ "$SIZE" -lt "$TOT_SIZE" ]
 do
 	SIZE=0
 
-	for f in $(ls | grep -Eo 'x[0-9]+___')
+	if [ -z "$OUTPUT_DIR" ]; then
+		TROZOS=$(ls | grep -Eo 'x[0-9]+___')
+	else
+		TROZOS=$(ls "$OUTPUT_DIR" | grep -Eo 'x[0-9]+___')
+	fi
+
+	for f in $TROZOS
 	do
-		chunk_size=$(stat -c "%s" "$f")
+		chunk_size=$(stat -c "%s" "${OUTPUT_DIR}${f}")
 		SIZE=$((SIZE+chunk_size))
 	done
 
@@ -100,7 +112,7 @@ do
 	sleep 1
 done
 
-SHA1_FILE_SIZE=$(stat -c "%s" "$FILE".sha1)
+SHA1_FILE_SIZE=$(stat -c "%s" "${OUTPUT_DIR}${FILE}".sha1)
 
 while [ "$SHA1_FILE_SIZE" -eq "0" ]
 do
@@ -110,13 +122,19 @@ done
 
 echo -ne "\nRenaming chunks..."
 
-TOTAL=$(ls | grep -Eo 'x[0-9]+___' | wc -l)
+if [ -z "$OUTPUT_DIR" ]; then
+	TOTAL=$(ls | grep -Eo 'x[0-9]+___' | wc -l)
+	TROZOS=$(ls | grep -Eo 'x[0-9]+___')
+else
+	TOTAL=$(ls "$OUTPUT_DIR" | grep -Eo 'x[0-9]+___' | wc -l)
+	TROZOS=$(ls "$OUTPUT_DIR" | grep -Eo 'x[0-9]+___')
+fi
 
 i=1
 
-for f in $(ls | grep -Eo 'x[0-9]+___')
+for f in $TROZOS
 do
-	mv "$f" "${FILE}.part${i}-${TOTAL}"
+	mv "${OUTPUT_DIR}${f}" "${OUTPUT_DIR}${FILE}.part${i}-${TOTAL}"
 	i=$((i+1)) 
 done
 
