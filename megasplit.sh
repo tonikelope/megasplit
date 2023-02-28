@@ -115,7 +115,7 @@ do
 	sleep 1
 done
 
-SHA1_FILE_SIZE=$(stat -c "%s" "${OUTPUT_DIR}${FILE}".sha1)
+SHA1_FILE_SIZE=$(stat -c "%s" "${OUTPUT_DIR}${FILE}.sha1")
 
 while [ "$SHA1_FILE_SIZE" -eq "0" ]
 do
@@ -137,7 +137,7 @@ SPLIT_DIRECTORY="${OUTPUT_DIR}${FILE}_SPLIT/"
 
 mkdir "$SPLIT_DIRECTORY"
 
-mv "$SHA1_FILE_SIZE" "${SPLIT_DIRECTORY}${SHA1_FILE_SIZE}"
+mv "${OUTPUT_DIR}${FILE}.sha1" "${SPLIT_DIRECTORY}${FILE}.sha1"
 
 i=1
 
