@@ -68,8 +68,11 @@ fi
 if [ -d "$2" ]; then
 
 	OUTPUT_DIR="${2}/"
+	echo -e "USING OUTPUT DIR -> ${OUTPUT_DIR}\n"
 
 fi
+
+echo "SPLIT MAX SIZE (BYTES) -> ${BYTES}\n"
 
 if [ "$REMOVE_ATER_SPLIT" = true ]; then
 
@@ -130,11 +133,15 @@ else
 	TROZOS=$(ls "$OUTPUT_DIR" | grep -Eo 'x[0-9]+___')
 fi
 
+SPLIT_DIRECTORY="${OUTPUT_DIR}${FILE}_SPLIT/"
+
+mkdir "$SPLIT_DIRECTORY"
+
 i=1
 
 for f in $TROZOS
 do
-	mv "${OUTPUT_DIR}${f}" "${OUTPUT_DIR}${FILE}.part${i}-${TOTAL}"
+	mv "${OUTPUT_DIR}${f}" "${SPLIT_DIRECTORY}${FILE}.part${i}-${TOTAL}"
 	i=$((i+1)) 
 done
 
