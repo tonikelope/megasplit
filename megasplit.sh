@@ -72,7 +72,7 @@ if [ -d "$2" ]; then
 
 fi
 
-echo "SPLIT MAX SIZE (BYTES) -> ${BYTES}\n"
+echo -e "SPLIT MAX SIZE (BYTES) -> ${BYTES}\n"
 
 if [ "$REMOVE_ATER_SPLIT" = true ]; then
 
@@ -136,6 +136,8 @@ fi
 SPLIT_DIRECTORY="${OUTPUT_DIR}${FILE}_SPLIT/"
 
 mkdir "$SPLIT_DIRECTORY"
+
+mv "$SHA1_FILE_SIZE" "${SPLIT_DIRECTORY}${SHA1_FILE_SIZE}"
 
 i=1
 
